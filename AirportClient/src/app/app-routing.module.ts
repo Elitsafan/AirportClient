@@ -6,11 +6,11 @@ import { FlightSummaryListComponent } from './flight-summary-module/components/f
 import { FlightRouteListComponent } from './flight-route-module/components/flight-route-list/flight-route-list.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/flights', pathMatch: 'full' }, 
+  { path: '', redirectTo: '/flights', pathMatch: 'full' },
   { path: 'flights', component: FlightsIndexComponent },
   { path: 'stations', component: FlightRouteListComponent },
   { path: 'summary', component: FlightSummaryListComponent },
-  { path: '**', component: PageNotFoundComponent },  
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({

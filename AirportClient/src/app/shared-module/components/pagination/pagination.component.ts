@@ -49,7 +49,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   private isPageSizeValid = (size: number) => this.pagination?.currentPage! * size <= this.pagination?.totalCount! || (this.pagination?.totalCount! > 0 && this.pagination?.currentPage === this.pagination?.totalPages);
-  
+
 
   private updateVisiblePages(): void {
     const length = Math.min(this.pagination!.totalPages, this.visibleRangeLength);
