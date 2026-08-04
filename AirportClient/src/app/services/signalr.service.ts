@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -17,7 +17,7 @@ export class SignalrService {
   #flightRunDoneData$: Observable<any>;
   #connectionError$: Observable<any>;
 
-  constructor() {
+  constructor(private ngZone: NgZone) {
     this.flightRunStartedSubject = new BehaviorSubject<any>(null!);
     this.stationClearedSubject = new BehaviorSubject<any>(null!);
     this.flightRunDoneSubject = new BehaviorSubject<any>(null!);
@@ -60,9 +60,15 @@ export class SignalrService {
       .start()
       .then(() => {
         console.log('Connection started');
-        this.addFlightRunStartedListener(data => this.flightRunStartedSubject.next(JSON.parse(data)));
-        this.addStationClearedListener(data => this.stationClearedSubject.next(JSON.parse(data)));
-        this.addFlightRunDoneListener(data => this.flightRunDoneSubject.next(JSON.parse(data)));
+        this.addFlightRunStartedListener(data => {
+          this.ngZone.run(() => this.flightRunStartedSubject.next(JSON.parse(data)));
+        });
+        this.addStationClearedListener(data => {
+          this.ngZone.run(() => this.stationClearedSubject.next(JSON.parse(data)));
+        });
+        this.addFlightRunDoneListener(data => {
+          this.ngZone.run(() => this.flightRunDoneSubject.next(JSON.parse(data)));
+        });
       })
       .catch(err => console.log('Error while starting connection: ' + err));
   }
