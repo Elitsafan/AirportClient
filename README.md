@@ -40,8 +40,7 @@ Configure the backend API URL in `src/environments/environment.ts`:
 
 ```typescript
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:5005'  // Your backend API URL
+  apiUrl: 'https://<YOUR_BACKEND_API_URL>'  // Your backend API URL
 };
 ```
 
