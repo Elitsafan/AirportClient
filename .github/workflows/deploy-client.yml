@@ -40,8 +40,8 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const path = 'src/environment/environment.ts';
-            let content = fs.readFileAsync(path, 'utf8');
+            const path = 'src/environments/environment.ts';
+            let content = fs.readFileSync(path, 'utf8');
             content = content
                 .replace('username: \"\"', 'username: \"' + process.env.ADMIN_USERNAME + '\"')
                 .replace('password: \"\"', 'password: \"' + process.env.ADMIN_PASSWORD + '\"');
