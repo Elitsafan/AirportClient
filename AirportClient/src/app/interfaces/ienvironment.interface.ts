@@ -1,7 +1,5 @@
 export interface IEnvironment {
   remoteUrl: string;
-  loginCredsUrl: string;
-  authEP: string;
   airportHubEP: string;
   startEP: string;
   statusEP: string;
