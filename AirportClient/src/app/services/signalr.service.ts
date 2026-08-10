@@ -117,16 +117,10 @@ export class SignalrService {
         this.http.get<ICredentialsResponse>(
           `${environment.loginCredsUrl}`,
           { observe: 'body' })
-          .pipe(switchMap(creds => {
-            const loginData = {
-              username: creds.ADMIN_USERNAME,
-              password: creds.ADMIN_PASSWORD
-            };
-
-            return this.http.post<{ token: string }>(
+          .pipe(switchMap(creds =>
+            this.http.post<{ token: string }>(
               `${environment.remoteUrl}${environment.authEP}`,
-              loginData);
-          }))
+              creds)))
       );
 
       return response.token;
