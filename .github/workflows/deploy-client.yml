@@ -32,22 +32,6 @@ jobs:
         working-directory: ./AirportClient
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
-      - name: Inject production credentials
-        working directory: ./AirportClient
-        env:
-            ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
-            ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-        run: |
-          node -e "
-            const fs = require('fs');
-            const path = 'src/environment/environment.ts';
-            let content = fs.readFileAsync(path, 'utf8');
-            content = content
-                .replace('username: \"\"', 'username: \"' + process.env.ADMIN_USERNAME + '\"')
-                .replace('password: \"\"', 'password: \"' + process.env.ADMIN_PASSWORD + '\"');
-            fs.writeFileSync(path, content);
-            console.log('Credentials injected successfully.');"
-
       - name: Build Angular app
         working-directory: ./AirportClient
         run: npm run build
