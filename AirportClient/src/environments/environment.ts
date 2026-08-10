@@ -1,4 +1,4 @@
-import { IEnvironment } from "../app/interfaces/ienvironment.interdace";
+import { IEnvironment } from "../app/interfaces/ienvironment.interface";
 
 export const environment: IEnvironment = {
   remoteUrl: 'https://airport.api.elitzafan.com',
