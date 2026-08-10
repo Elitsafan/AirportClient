@@ -33,10 +33,10 @@ jobs:
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
       - name: Inject production credentials
-        working directory: ./AirportClient
         env:
             ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
             ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        working directory: ./AirportClient
         run: |
           node -e "
             const fs = require('fs');
