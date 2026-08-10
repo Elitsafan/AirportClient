@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
-import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { ICredentialsResponse } from '../interfaces/icredentials-response.interface'
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class SignalrService {
   private flightRunStartedSubject: BehaviorSubject<any>;
   private stationClearedSubject: BehaviorSubject<any>;
@@ -93,19 +95,44 @@ export class SignalrService {
   }
 
   private async getAuthToken(): Promise<string> {
-    const loginCredentials = {
-      username: environment.loginCredentials.username,
-      password: environment.loginCredentials.password
-    };
+    if (environment.loginCredentials.username &&
+      environment.loginCredentials.password) {
+      try {
+        const response = await firstValueFrom(
+          this.http.post<{ token: string }>(
+            `${environment.remoteUrl}${environment.authEP}`,
+            environment.loginCredentials)
+        );
+
+        return response.token;
+      } catch (error) {
+        console.error('Failed to get SignalR Auth Token', error);
+
+        return '';
+      }
+    }
 
     try {
       const response = await firstValueFrom(
-        this.http.post<{ token: string }>(
-          `${environment.remoteUrl}${environment.loginEP}`,
-          loginCredentials));
+        this.http.get<ICredentialsResponse>(
+          `${environment.loginCredsUrl}`,
+          { observe: 'body' })
+          .pipe(switchMap(creds => {
+            const loginData = {
+              username: creds.ADMIN_USERNAME,
+              password: creds.ADMIN_PASSWORD
+            };
+
+            return this.http.post<{ token: string }>(
+              `${environment.remoteUrl}${environment.authEP}`,
+              loginData);
+          }))
+      );
+
       return response.token;
     } catch (error) {
       console.error('Failed to get SignalR Auth Token', error);
+
       return '';
     }
   }
