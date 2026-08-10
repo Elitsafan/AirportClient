@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
-import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { ICredentialsResponse } from '../interfaces/icredentials-response.interface'
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +18,7 @@ export class SignalrService {
   #flightRunDoneData$: Observable<any>;
   #connectionError$: Observable<any>;
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.flightRunStartedSubject = new BehaviorSubject<any>(null!);
     this.stationClearedSubject = new BehaviorSubject<any>(null!);
     this.flightRunDoneSubject = new BehaviorSubject<any>(null!);
@@ -48,10 +46,7 @@ export class SignalrService {
 
   startConnection = async () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(
-        `${environment.remoteUrl}${environment.airportHubEP}`, {
-        accessTokenFactory: () => this.getAuthToken()
-      })
+      .withUrl(`${environment.remoteUrl}${environment.airportHubEP}`)
       .build();
 
     // Handle connection close/disconnect
@@ -92,48 +87,5 @@ export class SignalrService {
     if (!this.hubConnection)
       throw new Error("Connection didn't start yet")
     this.hubConnection?.on(environment.flightRunDone, listener);
-  }
-
-  private async getAuthToken(): Promise<string> {
-    if (environment.loginCredentials.username &&
-      environment.loginCredentials.password) {
-      try {
-        const response = await firstValueFrom(
-          this.http.post<{ token: string }>(
-            `${environment.remoteUrl}${environment.authEP}`,
-            environment.loginCredentials)
-        );
-
-        return response.token;
-      } catch (error) {
-        console.error('Failed to get SignalR Auth Token', error);
-
-        return '';
-      }
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.http.get<ICredentialsResponse>(
-          `${environment.loginCredsUrl}`,
-          { observe: 'body' })
-          .pipe(switchMap(creds => {
-            const loginData = {
-              username: creds.ADMIN_USERNAME,
-              password: creds.ADMIN_PASSWORD
-            };
-
-            return this.http.post<{ token: string }>(
-              `${environment.remoteUrl}${environment.authEP}`,
-              loginData);
-          }))
-      );
-
-      return response.token;
-    } catch (error) {
-      console.error('Failed to get SignalR Auth Token', error);
-
-      return '';
-    }
   }
 }

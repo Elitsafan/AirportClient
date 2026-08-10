@@ -2,8 +2,6 @@ import { IEnvironment } from "../app/interfaces/ienvironment.interface";
 
 export const environment: IEnvironment = {
   remoteUrl: 'https://airport.api.elitzafan.com',
-  loginCredsUrl: 'https://airport-api-demo-g8fnbgchf3e4ahcp.israelcentral-01.azurewebsites.net',
-  authEP: '/api/Auth/Login',
   airportHubEP: '/airporthub',
   startEP: '/api/Airport/Start',
   statusEP: '/api/Airport/Status',

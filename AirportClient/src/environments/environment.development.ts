@@ -2,8 +2,6 @@ import { IEnvironment } from "../app/interfaces/ienvironment.interface";
 
 export const environment: IEnvironment = {
   remoteUrl: 'http://localhost:5005',
-  loginCredsUrl: '',
-  authEP: '/api/Auth/Login',
   airportHubEP: '/airporthub',
   startEP: '/api/Airport/Start',
   statusEP: '/api/Airport/Status',
